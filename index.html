@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HomeKeep</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #f5f8f9;
+  --white: #ffffff;
+  --text: #102326;
+  --muted: #68787c;
+  --green: #147c76;
+  --green-dark: #0c625d;
+  --light-green: #e4f1ef;
+  --border: #dce6e8;
+  --gold: #e4b66b;
+  --shadow: 0 25px 60px rgba(20, 50, 55, 0.10);
+}
+
+body.dark {
+  --bg: #0d1719;
+  --white: #142326;
+  --text: #f2f7f7;
+  --muted: #a9b8bb;
+  --light-green: #193331;
+  --border: #294044;
+  --shadow: 0 25px 60px rgba(0,0,0,.3);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: .3s;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.navbar {
+  height: 75px;
+  padding: 0 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(245,248,249,.85);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+}
+
+.dark .navbar {
+  background: rgba(13,23,25,.85);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 20px;
+}
+
+.logo-icon {
+  width: 39px;
+  height: 39px;
+  display: grid;
+  place-items: center;
+  color: white;
+  border-radius: 13px;
+  background: linear-gradient(135deg, var(--green), #46aaa2);
+  box-shadow: 0 10px 25px rgba(20,124,118,.25);
+}
+
+nav {
+  display: flex;
+  gap: 30px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+nav a:hover {
+  color: var(--green);
+}
+
+#darkMode {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.hero {
+  min-height: 680px;
+  padding: 100px 7%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 80px;
+  overflow: hidden;
+}
+
+.hero-content {
+  max-width: 650px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 8px 13px;
+  border-radius: 50px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 25px;
+}
+
+.hero h1 {
+  font-size: clamp(55px, 7vw, 92px);
+  line-height: .95;
+  letter-spacing: -5px;
+}
+
+.hero h1 span {
+  color: var(--green);
+}
+
+.hero p {
+  max-width: 560px;
+  color: var(--muted);
+  font-size: 18px;
+  margin: 27px 0 30px;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.primary-btn,
+.secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 20px;
+  border-radius: 13px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.primary-btn {
+  background: var(--green);
+  color: white;
+  border: none;
+  box-shadow: 0 12px 30px rgba(20,124,118,.22);
+}
+
+.primary-btn:hover {
+  transform: translateY(-3px);
+  background: var(--green-dark);
+}
+
+.secondary-btn {
+  background: var(--white);
+  border: 1px solid var(--border);
+}
+
+.dashboard {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 27px;
+  box-shadow: var(--shadow);
+  transform: rotate(1.5deg);
+}
+
+.dashboard-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.dashboard-top small {
+  color: var(--muted);
+}
+
+.dashboard-top h3 {
+  margin-top: 3px;
+}
+
+.percentage {
+  width: 55px;
+  height: 55px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--green);
+  font-weight: 800;
+  background: conic-gradient(
+    var(--green) 72%,
+    var(--light-green) 72%
+  );
+}
+
+.task {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--light-green);
+  border-radius: 14px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.task span {
+  width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  background: white;
+  color: var(--green);
+  font-weight: 900;
+}
+
+.task.done span {
+  background: var(--green);
+  color: white;
+}
+
+.section {
+  padding: 100px 7%;
+}
+
+.section-title {
+  max-width: 650px;
+  margin-bottom: 45px;
+}
+
+.section-title small,
+.checklist-info small,
+.planner-text small {
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 1.5px;
+}
+
+.section-title h2,
+.checklist-info h2,
+.planner-text h2 {
+  font-size: clamp(35px, 5vw, 55px);
+  line-height: 1.05;
+  letter-spacing: -2px;
+  margin: 8px 0 15px;
+}
+
+.section-title p,
+.checklist-info p,
+.planner-text p {
+  color: var(--muted);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.card {
+  padding: 25px;
+  min-height: 190px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  transition: .25s;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow);
+}
+
+.card-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  background: var(--light-green);
+  border-radius: 14px;
+  font-size: 22px;
+  margin-bottom: 30px;
+}
+
+.card h3 {
+  margin-bottom: 5px;
+}
+
+.card p {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.checklist-section {
+  padding: 100px 7%;
+  background: var(--light-green);
+  display: grid;
+  grid-template-columns: .8fr 1.2fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.checklist-info {
+  max-width: 450px;
+}
+
+.checklist {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 25px;
+  padding: 25px;
+  box-shadow: var(--shadow);
+}
+
+.checklist h3 {
+  margin-bottom: 15px;
+}
+
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 15px 5px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.checkbox {
+  width: 25px;
+  height: 25px;
+  border: 2px solid var(--border);
+  border-radius: 7px;
+  background: transparent;
+  color: transparent;
+  cursor: pointer;
+}
+
+.checkbox.checked {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+
+.checkbox.checked + span {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+.planner-section {
+  padding: 110px 7%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.planner-preview {
+  padding: 35px;
+  background: #f5eddd;
+  border-radius: 30px;
+  transform: rotate(-2deg);
+  box-shadow: var(--shadow);
+}
+
+.paper {
+  background: #fffdf7;
+  min-height: 410px;
+  padding: 30px;
+  border-radius: 16px;
+  color: #263633;
+  box-shadow: 0 10px 30px rgba(50,40,20,.12);
+}
+
+.paper-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 15px;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #ded5c5;
+}
+
+.paper-header h3 {
+  font-family: Georgia, serif;
+  font-size: 27px;
+}
+
+.paper h4 {
+  margin: 22px 0 10px;
+}
+
+.line {
+  height: 10px;
+  border-radius: 10px;
+  background: #e7dfd1;
+  margin: 9px 0;
+}
+
+.line.short {
+  width: 60%;
+}
+
+.planner-text {
+  max-width: 550px;
+}
+
+.final-section {
+  margin: 40px 7% 100px;
+  padding: 75px;
+  border-radius: 30px;
+  color: white;
+  background:
+    radial-gradient(
+      circle at 90% 10%,
+      rgba(255,255,255,.15),
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #0d756f,
+      #154f4c
+    );
+}
+
+.final-section h2 {
+  font-size: clamp(40px, 6vw, 70px);
+  line-height: 1;
+  letter-spacing: -3px;
+}
+
+.final-section p {
+  margin: 20px 0 30px;
+  color: rgba(255,255,255,.75);
+}
+
+footer {
+  padding: 35px 7%;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+@media (max-width: 850px) {
+  nav {
+    display: none;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    padding-top: 70px;
+    gap: 50px;
+  }
+
+  .dashboard {
+    transform: none;
+  }
+
+  .cards {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .checklist-section,
+  .planner-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 550px) {
+  .hero h1 {
+    letter-spacing: -3px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .final-section {
+    margin: 20px 4% 70px;
+    padding: 45px 25px;
+  }
+
+  footer {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+  <div class="logo">
+    <div class="logo-icon">⌂</div>
+    <span>HomeKeep</span>
+  </div>
+
+  <nav>
+    <a href="#features">Features</a>
+    <a href="#checklist">Checklist</a>
+    <a href="#planners">Planners</a>
+  </nav>
+
+  <button id="darkMode">☾</button>
+</header>
+
+<main>
+
+<section class="hero">
+  <div class="hero-content">
+    <div class="badge">● SMART HOME MAINTENANCE</div>
+
+    <h1>
+      Take care of your
+      <span>home.</span>
+    </h1>
+
+    <p>
+      HomeKeep makes home maintenance simple with smart
+      checklists, helpful guides, and beautiful planners.
+    </p>
+
+    <div class="buttons">
+      <a href="#checklist" class="primary-btn">
+        Start a checklist →
+      </a>
+
+      <a href="#planners" class="secondary-btn">
+        Explore planners
+      </a>
+    </div>
+  </div>
+
+  <div class="dashboard">
+    <div class="dashboard-top">
+      <div>
+        <small>September</small>
+        <h3>Monthly Maintenance</h3>
+      </div>
+
+      <div class="percentage">72%</div>
+    </div>
+
+    <div class="task done">
+      <span>✓</span>
+      Replace HVAC filter
+    </div>
+
+    <div class="task done">
+      <span>✓</span>
+      Test smoke detectors
+    </div>
+
+    <div class="task">
+      <span>○</span>
+      Clean dryer vent
+    </div>
+
+    <div class="task">
+      <span>○</span>
+      Inspect gutters
+    </div>
+  </div>
+</section>
+
+<section id="features" class="section">
+  <div class="section-title">
+    <small>EXPLORE</small>
+    <h2>Everything your home needs.</h2>
+    <p>
+      Stay ahead of maintenance before small problems become
+      expensive ones.
+    </p>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">💧</div>
+      <h3>Plumbing</h3>
+      <p>Leaks, faucets, drains and water systems.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">❄️</div>
+      <h3>HVAC</h3>
+      <p>Heating, cooling and filter maintenance.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🌿</div>
+      <h3>Outdoor</h3>
+      <p>Gutters, yards, roofs and exterior care.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🛡️</div>
+      <h3>Safety</h3>
+      <p>Smoke alarms and important safety checks.</p>
+    </div>
+  </div>
+</section>
+
+<section id="checklist" class="checklist-section">
+
+  <div class="checklist-info">
+    <small>YOUR MONTH</small>
+
+    <h2>Your home maintenance checklist.</h2>
+
+    <p>
+      Tap a task when you've completed it.
+    </p>
+  </div>
+
+  <div class="checklist">
+
+    <h3>September Checklist</h3>
+
+    <div class="check-item">
+      <button class="checkbox">✓</button>
+      <span>Replace HVAC filter</span>
+    </div>
+
+    <div class="check-item">
+      <button class="checkbox">✓</button>
+      <span>Test smoke detectors</span>
+    </div>
+
+    <div class="check-item">
+      <button class="checkbox">✓</button>
+      <span>Inspect gutters</span>
+    </div>
+
+    <div class="check-item">
+      <button class="checkbox">✓</button>
+      <span>Check for plumbing leaks</span>
+    </div>
+
+    <div class="check-item">
+      <button class="checkbox">✓</button>
+      <span>Clean dryer vent</span>
+    </div>
+
+    <div class="check-item">
+      <button class="checkbox">✓</button>
+      <span>Inspect windows and doors</span>
+    </div>
+
+  </div>
+</section>
+
+<section id="planners" class="planner-section">
+
+  <div class="planner-preview">
+    <div class="paper">
+
+      <div class="paper-header">
+        <h3>Home Planner</h3>
+        <span>2026</span>
+      </div>
+
+      <h4>Monthly Home Goals</h4>
+
+      <div class="line"></div>
+      <div class="line short"></div>
+      <div class="line"></div>
+
+      <h4>Maintenance</h4>
+
+      <div class="line"></div>
+      <div class="line short"></div>
+      <div class="line"></div>
+
+      <h4>Notes</h4>
+
+      <div class="line"></div>
+      <div class="line"></div>
+
+    </div>
+  </div>
+
+  <div class="planner-text">
+    <small>COMING SOON</small>
+
+    <h2>Beautiful planners for organized homeowners.</h2>
+
+    <p>
+      Create printable and digital planners to organize
+      maintenance, repairs, projects and goals.
+    </p>
+
+    <button class="primary-btn" id="plannerButton">
+      Join the waitlist →
+    </button>
+  </div>
+
+</section>
+
+<section class="final-section">
+
+  <h2>Your home deserves a system.</h2>
+
+  <p>
+    Start small. Stay organized. Take better care of your home.
+  </p>
+
+  <a href="#checklist" class="primary-btn">
+    Get started →
+  </a>
+
+</section>
+
+</main>
+
+<footer>
+  <strong>HomeKeep</strong>
+  <span>Built for better homes.</span>
+</footer>
+
+<script>
+const darkModeButton = document.getElementById("darkMode");
+
+darkModeButton.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+
+  if (document.body.classList.contains("dark")) {
+    darkModeButton.textContent = "☀";
+  } else {
+    darkModeButton.textContent = "☾";
+  }
+});
+
+const checkboxes = document.querySelectorAll(".checkbox");
+
+checkboxes.forEach(button => {
+  button.addEventListener("click", () => {
+    button.classList.toggle("checked");
+  });
+});
+
+const plannerButton = document.getElementById("plannerButton");
+
+plannerButton.addEventListener("click", () => {
+  alert("🎉 You're on the HomeKeep planner waitlist!");
+});
+
+console.log("🏠 Welcome to HomeKeep!");
+</script>
+
+</body>
+</html>
